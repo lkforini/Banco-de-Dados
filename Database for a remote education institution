@@ -1,0 +1,168 @@
+create database db_faculdade;
+use db_faculdade;
+create table tbl_aluno (
+id int primary key not null auto_increment,
+nome varchar (100) not null,
+cpf varchar (18) not null,
+telefone varchar (20) not null,
+email varchar (255) not null,
+unique index (id));
+
+create table tbl_professor (
+id int primary key not null auto_increment,
+nome varchar (100) not null,
+cpf varchar (18) not null,
+email varchar (255) not null,
+telefone varchar (20) not null,
+titulacao varchar (18),
+unique index (id));
+
+create table tbl_disciplina (
+id int not null primary key auto_increment,
+nome varchar (45) not null,
+carga_horaria int not null,
+unique index (id));
+
+create table tbl_curso (
+id int primary key auto_increment not null,
+nome varchar (45) not null,
+grau varchar (25) not null,
+carga_horaria_total int not null,
+unique index (id));
+
+create table tbl_endereco_aluno (
+id int primary key not null auto_increment,
+logradouro varchar (45) not null,
+rua varchar (45) not null,
+cidade varchar (45) not null,
+estado varchar (45) not null,
+bairro varchar (45) not null,
+cep varchar (10) not null,
+id_aluno int not null,
+
+constraint FK_aluno_endereco_aluno
+foreign key (id_aluno) 
+references tbl_aluno (id),
+
+unique index (id));
+
+create table tbl_endereco_professor (
+id int primary key not null auto_increment,
+logradouro varchar (45) not null,
+rua varchar (45) not null,
+cidade varchar (45) not null,
+estado varchar (45) not null,
+bairro varchar (45) not null,
+cep varchar (10) not null,
+id_professor int not null,
+
+constraint FK_professor_endereco_professor
+foreign key (id_professor) 
+references tbl_professor (id),
+
+unique index (id));
+
+create table tbl_turma (
+id int not null primary key auto_increment,
+turno varchar (10) not null,
+semestre varchar (7) not null,
+ano int not null,
+id_curso int not null,
+
+constraint FK_curso_turma
+foreign key (id_curso)
+references tbl_curso (id),
+
+unique index (id));
+
+create table tbl_matricula_aula (
+id int primary key not null auto_increment,
+data_matricula date not null,
+status varchar (10) not null,
+id_aluno int not null,
+id_turma int not null,
+
+constraint FK_aluno_matricula_aula
+foreign key (id_aluno)
+references tbl_aluno (id),
+
+constraint FK_turma_matricula_aula
+foreign key (id_turma)
+references tbl_turma (id),
+
+unique index (id));
+
+create table tbl_aula (
+id int primary key not null auto_increment,
+sala varchar (10) not null,
+dia_semana varchar (10) not null,
+horario_inicio time not null,
+horario_fim time not null,
+id_disciplina int not null,
+id_turma int not null,
+id_professor int not null,
+
+constraint FK_disciplina_aula
+foreign key (id_disciplina)
+references tbl_disciplina (id),
+
+constraint FK_turma_aula
+foreign key (id_turma)
+references tbl_turma (id),
+
+constraint FK_professor_aula
+foreign key (id_professor)
+references tbl_professor (id),
+
+unique index (id));
+
+insert into tbl_aluno (nome, cpf, telefone, email) 
+values ('Lucas', '642.195.653/78', '16992648291', 'lucas@gmail.com'),
+('Maria','95165423845','16998456575','maria@outlook.com'),
+('Jorge','36263548195','11994253526','jorge@yahoo.com'),
+('Ana','35987846518','11996314217','ana@hotmail.com'),
+('Matheus','64815254895','11994542515','matheus@gmail.com');
+
+insert into tbl_professor (nome, cpf, titulacao, email, telefone) values
+('João','951632845','mestrado','joao@gmail.com','119526852'),
+('Helena','96525266561','mestrado','helena@hotmail.com','11852969626'),
+('Renata','20318596132','doutorado','renata@hotmail.com','1699889585'),
+('Silvia','5162316518','','silvia@yahoo.com','1516262298');
+
+select * from tbl_professor;
+
+insert into tbl_disciplina (nome, carga_horaria) values
+('modelagem de banco de dados','20'),
+('lógica computacional usando python','30'),
+('lógica matemática','20'),
+('zoologia','120'),
+('botânica','90'),
+('genética','60');
+
+insert into tbl_curso (nome, grau, carga_horaria_total) values
+('Analise e desenvolvimento de sistemas','tecnólogo','2000'),
+('Ciências biológicas','bacharelado','3600');
+
+insert into tbl_endereco_aluno (logradouro, rua, cidade, estado, bairro, cep, id_aluno) values
+('rua','joão da silva 123','Campinas','SP','centro','13045-000','1'),
+('avenida','das Palmeiras','Jardim Europa','Campinas','SP','13045-000','2'),
+('Rua','Dom Pedro I','Centro','Ribeirão Preto','SP','14010-080','3'),
+('Travessa','dos Cravos','Vila Nova','Sorocaba','SP','18030-270','4'),
+('Estrada','Municipal de São Bento','Recanto Verde','Franca','SP','14405-550','5');
+
+insert into tbl_endereco_professor (logradouro, rua, cidade, estado, bairro, cep, id_professor) values
+('Rua','São Francisco de Assis','Vila Esperança','Araraquara','SP','14800-300','1'),
+('Avenida','Getúlio Vargas','Jardim Bela Vista','Bauru','SP','17012-150','2'),
+('Travessa','das Rosas Brancas','das Rosas Brancas','Marília','SP','17514-220','3'),
+('Estrada','do Barreiro','Morada do Sol','Sertãozinho','SP','14170-000','4');
+
+insert into tbl_aula (sala, dia_semana, horario_inicio, horario_fim, id_disciplina, id_turma, id_professor) values 
+('sala 01', 'segunda', '09:00:00', '10:00:00', '1', '1', '2'), 
+('sala B', 'terça', '19:00:00', '20:00:00', '5', '2', '1');
+
+insert into tbl_turma (turno, semestre, ano, id_curso) values 
+('manhã', '3°', '2024', '1'), ('noite', '6°', '2023', '2');
+
+insert into tbl_matricula_aula (data_matricula, status, id_aluno, id_turma) values 
+('2022-12-20','ativo','1','2'), ('2024-01-01','ativo','2','1'), ('2024-01-01','ativo','3','1'),
+('2022-12-20','ativo','4','2'), ('2024-01-01','ativo','5','1');
